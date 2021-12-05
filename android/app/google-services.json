@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "673597065828",
+    "project_id": "driver-id-76b08",
+    "storage_bucket": "driver-id-76b08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673597065828:android:ab7ebbdd697904ff3a2d71",
+        "android_client_info": {
+          "package_name": "co.id.ilcs.driverid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673597065828-er9dfnm3ajgoq1lktvknsk7abuetrg73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa85cYv680M7tVLPTGjkwPmAuxoNXTQPo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673597065828-er9dfnm3ajgoq1lktvknsk7abuetrg73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673597065828:android:faf242f7ba05a50d3a2d71",
+        "android_client_info": {
+          "package_name": "com.driverid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673597065828-er9dfnm3ajgoq1lktvknsk7abuetrg73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa85cYv680M7tVLPTGjkwPmAuxoNXTQPo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673597065828-er9dfnm3ajgoq1lktvknsk7abuetrg73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
