@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:driverid/widgets/app_bar_custom.dart';
@@ -6,24 +9,28 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:driverid/models/account_model.dart';
 import 'package:flutter/painting.dart';
-import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
 
 import '../../../config.dart';
 import '../../../styles.dart';
 
-class sertifikatscreen extends StatefulWidget {
+class ImageGenerator extends StatefulWidget {
+  final Random rd;
+  final int numColors;
+  ImageGenerator(this.accountModel, {Key key, this.rd, this.numColors})
+      : super(key: key);
   AccountModel accountModel;
 
-  sertifikatscreen(this.accountModel, {Key key}) : super(key: key);
   @override
-  _sertifikatscreenState createState() => _sertifikatscreenState();
+  _ImageGeneratorState createState() => _ImageGeneratorState();
 }
 
-class _sertifikatscreenState extends State<sertifikatscreen> {
+class _ImageGeneratorState extends State<ImageGenerator> {
+  ByteData imgBytes;
   ui.Image image;
   String textparagraph;
+  String iddriver;
   // ui.Paragraph paragraph;
 
   @override
@@ -33,6 +40,8 @@ class _sertifikatscreenState extends State<sertifikatscreen> {
     loadImage('assets/images/certificate.png');
     textparagraph =
         "${widget.accountModel?.name == null ? '-' : widget.accountModel?.name}";
+    iddriver =
+        '${widget.accountModel?.driver_id == null ? ' - ' : widget.accountModel?.driver_id}';
   }
 
   Future loadImage(String path) async {
@@ -46,65 +55,69 @@ class _sertifikatscreenState extends State<sertifikatscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarCustom(
-        title: 'Sertifikat',
-      ),
-      body: Center(
-        child: image == null
-            ? CircularProgressIndicator()
-            : Container(
-                height: 400,
-                width: 400,
-                child: FittedBox(
-                  child: SizedBox(
-                    width: image.width.toDouble(),
-                    height: image.height.toDouble(),
-                    child: CustomPaint(
-                      painter: ImagePainter(image, textparagraph),
-                    ),
-                  ),
-                ),
+        appBar: AppBarCustom(
+          title: 'Sertifikat',
+        ),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: RaisedButton(
+                    child: Text('generate certificate'),
+                    onPressed: generateImage),
               ),
-      ),
-    );
+              imgBytes != null
+                  ? Center(
+                      child: Image.memory(
+                      Uint8List.view(imgBytes.buffer),
+                      width: 400,
+                      height: 300,
+                      alignment: Alignment.center,
+                    ))
+                  : Container()
+            ],
+          ),
+        ));
   }
-}
 
-class ImagePainter extends CustomPainter {
-  final ui.Image image;
-  final String textparagraph;
-
-  // final ui.Paragraph paragraph;
-
-  const ImagePainter(this.image, this.textparagraph);
-
-  @override
-  Future<void> paint(Canvas canvas, Size size) async {
+  void generateImage() async {
     final recorder = ui.PictureRecorder();
-    // final canvas =
-    //     Canvas(recorder, Rect.fromPoints(Offset(0.0, 0.0), Offset(370, 370)));
-    final paint = Paint();
+    final canvas = Canvas(recorder);
+
+    final paint = Paint()..style = PaintingStyle.fill;
+
     final textStyle = ui.TextStyle(
-      color: Colors.black,
-      fontSize: 24,
+      color: Colors.white,
+      fontSize: 48,
     );
     final paragraphStyle = ui.ParagraphStyle(
         textDirection: TextDirection.ltr, textAlign: TextAlign.center);
     final paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
       ..pushStyle(textStyle)
       ..addText(textparagraph);
-    final constraints = ui.ParagraphConstraints(width: 370);
+    final paragraphBuilder2 = ui.ParagraphBuilder(paragraphStyle)
+      ..pushStyle(textStyle)
+      ..addText(iddriver);
+    final constraints = ui.ParagraphConstraints(width: 1300);
     final paragraph = paragraphBuilder.build();
+    final paragraph2 = paragraphBuilder2.build();
     paragraph.layout(constraints);
-    final offset = Offset(0, 85);
-
-    canvas.drawImage(image, Offset.zero, paint);
+    paragraph2.layout(constraints);
+    final offset = Offset(-60, 400);
+    canvas.drawImage(image, Offset(13, 0), paint);
     canvas.drawParagraph(paragraph, offset);
-    // final picture = recorder.endRecording();
-    // final img = await picture.toImage(200, 200);
-    // final pngBytes = await img.toByteData(format: ImageByteFormat.png);
-  }
+    canvas.drawParagraph(paragraph2, ui.Offset(-60, 480));
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+    final picture = recorder.endRecording();
+    final img = await picture.toImage(1300, 900);
+    final pngBytes = await img.toByteData(format: ImageByteFormat.png);
+
+    setState(() {
+      imgBytes = pngBytes;
+    });
+  }
 }

@@ -4,7 +4,7 @@ import 'package:driverid/models/transaction_model.dart';
 import 'package:driverid/providers/common_provider.dart';
 import 'package:driverid/screens/auth/login_screen.dart';
 import 'package:driverid/screens/beranda/faq.dart';
-import 'package:driverid/screens/beranda/imagegenerator.dart';
+import 'package:driverid/screens/beranda/sertifikat.dart';
 import 'package:driverid/screens/beranda/panduan.dart';
 import 'package:driverid/screens/beranda/sertifikat.dart';
 import 'package:driverid/screens/beranda/tentang.dart';
@@ -107,7 +107,7 @@ class _SideMenuWidgetState extends State<SideMenuWidget> {
                     context,
                     PageTransition(
                         type: Config.PAGE_TRANSITION,
-                        child: ImageGenerator(widget.accountModel)));
+                        child: sertifikat(widget.accountModel)));
                 setState(() {});
               },
             ),
