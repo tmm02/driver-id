@@ -15,18 +15,18 @@ import 'package:flutter/services.dart';
 import '../../../config.dart';
 import '../../../styles.dart';
 
-class ImageGenerator extends StatefulWidget {
+class sertifikat extends StatefulWidget {
   final Random rd;
   final int numColors;
-  ImageGenerator(this.accountModel, {Key key, this.rd, this.numColors})
+  sertifikat(this.accountModel, {Key key, this.rd, this.numColors})
       : super(key: key);
   AccountModel accountModel;
 
   @override
-  _ImageGeneratorState createState() => _ImageGeneratorState();
+  _sertifikatState createState() => _sertifikatState();
 }
 
-class _ImageGeneratorState extends State<ImageGenerator> {
+class _sertifikatState extends State<sertifikat> {
   ByteData imgBytes;
   ui.Image image;
   String textparagraph;
@@ -41,7 +41,7 @@ class _ImageGeneratorState extends State<ImageGenerator> {
     textparagraph =
         "${widget.accountModel?.name == null ? '-' : widget.accountModel?.name}";
     iddriver =
-        '${widget.accountModel?.driver_id == null ? ' - ' : widget.accountModel?.driver_id}';
+        '${widget.accountModel?.social_id == null ? ' - ' : widget.accountModel?.social_id}';
   }
 
   Future loadImage(String path) async {
@@ -67,8 +67,9 @@ class _ImageGeneratorState extends State<ImageGenerator> {
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: RaisedButton(
-                    child: Text('generate certificate'),
-                    onPressed: generateImage),
+                  child: Text('generate certificate'),
+                  onPressed: generateImage,
+                ),
               ),
               imgBytes != null
                   ? Center(
@@ -113,7 +114,7 @@ class _ImageGeneratorState extends State<ImageGenerator> {
     canvas.drawParagraph(paragraph2, ui.Offset(-60, 480));
 
     final picture = recorder.endRecording();
-    final img = await picture.toImage(1300, 900);
+    final img = await picture.toImage(1280, 917);
     final pngBytes = await img.toByteData(format: ImageByteFormat.png);
 
     setState(() {
