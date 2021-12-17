@@ -2,6 +2,13 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:ui';
+import 'package:flutter/rendering.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+
+import 'package:dio/dio.dart';
 
 import 'package:driverid/widgets/app_bar_custom.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +38,8 @@ class _sertifikatState extends State<sertifikat> {
   ui.Image image;
   String textparagraph;
   String iddriver;
+  String linkcert;
+  bool loading = false;
   // ui.Paragraph paragraph;
 
   @override
@@ -52,6 +61,21 @@ class _sertifikatState extends State<sertifikat> {
     setState(() => this.image = image);
   }
 
+  Future<AccountModel> getMyProfile() async {
+    final url = Uri.parse('http://116.193.190.125:3000/cert');
+    final response = await http.post(url, body: {
+      'nama': textparagraph,
+      'ktp': iddriver,
+    });
+
+    print('${response.body}');
+
+    setState(() {
+      linkcert = '${response.body}.png';
+    });
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +92,10 @@ class _sertifikatState extends State<sertifikat> {
                 padding: const EdgeInsets.all(12.0),
                 child: RaisedButton(
                   child: Text('generate certificate'),
-                  onPressed: generateImage,
+                  onPressed: () {
+                    generateImage();
+                    getMyProfile();
+                  },
                 ),
               ),
               imgBytes != null
@@ -79,7 +106,15 @@ class _sertifikatState extends State<sertifikat> {
                       height: 300,
                       alignment: Alignment.center,
                     ))
-                  : Container()
+                  : Container(),
+              linkcert != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: RaisedButton(
+                          child: Text('download cert'),
+                          onPressed: downloadFile),
+                    )
+                  : Container(),
             ],
           ),
         ));
@@ -119,6 +154,47 @@ class _sertifikatState extends State<sertifikat> {
 
     setState(() {
       imgBytes = pngBytes;
+    });
+  }
+
+  Future<bool> saveFile(String url, String fileName) async {
+    Directory directory;
+    try {
+      if (Platform.isAndroid) {
+        if (await _requestPermission(Permission.storage)) {
+        } else {
+          return false;
+        }
+      } else {}
+    } catch (e) {}
+  }
+
+  Future<bool> _requestPermission(Permission permission) async {
+    if (await permission.isGranted) {
+      return true;
+    } else {
+      var result = await permission.request();
+      if (result == PermissionStatus.granted) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  downloadFile() async {
+    setState(() {
+      loading = true;
+    });
+
+    bool downloaded = await saveFile("$linkcert", "sertifikat.png");
+    if (downloaded) {
+      print("File Downloaded");
+    } else {
+      print("Problem Downloading File");
+    }
+    setState(() {
+      loading = false;
     });
   }
 }
